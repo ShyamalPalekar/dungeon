@@ -1,0 +1,304 @@
+name: 👥 Contributor Validation
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+
+jobs:
+  contributor-validation:
+    name: 🔍 Validate Contribution Standards
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout PR
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
+
+    - name: 🔍 Validate PR Template
+      id: template-check
+      run: |
+        PR_BODY="${{ github.event.pull_request.body }}"
+        echo "Checking PR template compliance..."
+        
+        # Check required sections
+        SECTIONS=("Description" "Type of Change" "Testing" "Pre-submission Checklist")
+        MISSING_SECTIONS=""
+        
+        for section in "${SECTIONS[@]}"; do
+          if ! echo "$PR_BODY" | grep -q "## .*$section"; then
+            MISSING_SECTIONS="$MISSING_SECTIONS- $section\n"
+          fi
+        done
+        
+        if [ -z "$MISSING_SECTIONS" ]; then
+          echo "✅ PR template complete"
+          echo "template-valid=true" >> $GITHUB_OUTPUT
+        else
+          echo "❌ Missing sections:"
+          echo -e "$MISSING_SECTIONS"
+          echo "template-valid=false" >> $GITHUB_OUTPUT
+          echo "missing-sections<<EOF" >> $GITHUB_OUTPUT
+          echo -e "$MISSING_SECTIONS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+        fi
+
+    - name: 🏷️ Validate Labels
+      id: label-check
+      run: |
+        LABELS="${{ join(github.event.pull_request.labels.*.name, ' ') }}"
+        echo "PR Labels: $LABELS"
+        
+        VALID_LABELS=("bug" "feature" "ai" "ui" "docs" "performance" "maintenance" "breaking-change")
+        HAS_VALID_LABEL=false
+        
+        for label in $LABELS; do
+          for valid_label in "${VALID_LABELS[@]}"; do
+            if [[ "$label" == "$valid_label" ]]; then
+              HAS_VALID_LABEL=true
+              break 2
+            fi
+          done
+        done
+        
+        if [[ "$HAS_VALID_LABEL" == "true" ]]; then
+          echo "✅ Valid labels found"
+          echo "labels-valid=true" >> $GITHUB_OUTPUT
+        else
+          echo "❌ No valid labels found"
+          echo "labels-valid=false" >> $GITHUB_OUTPUT
+        fi
+
+    - name: 🌿 Validate Branch Naming
+      id: branch-check
+      run: |
+        BRANCH_NAME="${{ github.head_ref }}"
+        echo "Branch name: $BRANCH_NAME"
+        
+        if echo "$BRANCH_NAME" | grep -E '^(feature|fix|docs|ai|ui|hotfix|chore)\/[a-z0-9\-]+$'; then
+          echo "✅ Branch name follows convention"
+          echo "branch-valid=true" >> $GITHUB_OUTPUT
+        else
+          echo "❌ Branch name doesn't follow convention"
+          echo "Expected: feature/description, fix/issue-123, ai/algorithm-name, etc."
+          echo "branch-valid=false" >> $GITHUB_OUTPUT
+        fi
+
+    - name: 📊 Check File Changes
+      id: file-check
+      run: |
+        # Get changed files
+        CHANGED_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }})
+        echo "Changed files:"
+        echo "$CHANGED_FILES"
+        
+        # Check for important file types
+        HAS_CODE_CHANGES=false
+        HAS_TEST_CHANGES=false
+        HAS_DOC_CHANGES=false
+        
+        while IFS= read -r file; do
+          if [[ "$file" =~ \.(cs|xaml)$ ]]; then
+            HAS_CODE_CHANGES=true
+          elif [[ "$file" =~ Test.*\.(cs)$ ]] || [[ "$file" =~ .*Test\.(cs)$ ]]; then
+            HAS_TEST_CHANGES=true
+          elif [[ "$file" =~ \.(md|txt)$ ]]; then
+            HAS_DOC_CHANGES=true
+          fi
+        done <<< "$CHANGED_FILES"
+        
+        echo "has-code-changes=$HAS_CODE_CHANGES" >> $GITHUB_OUTPUT
+        echo "has-test-changes=$HAS_TEST_CHANGES" >> $GITHUB_OUTPUT
+        echo "has-doc-changes=$HAS_DOC_CHANGES" >> $GITHUB_OUTPUT
+
+    - name: 👤 Check Contributor Status
+      id: contributor-status
+      run: |
+        AUTHOR="${{ github.event.pull_request.user.login }}"
+        echo "PR Author: $AUTHOR"
+        
+        # Check if author is maintainer/owner
+        MAINTAINERS=("galihru")
+        IS_MAINTAINER=false
+        
+        for maintainer in "${MAINTAINERS[@]}"; do
+          if [[ "$AUTHOR" == "$maintainer" ]]; then
+            IS_MAINTAINER=true
+            break
+          fi
+        done
+        
+        echo "is-maintainer=$IS_MAINTAINER" >> $GITHUB_OUTPUT
+        
+        # Check contributor history (simplified)
+        COMMIT_COUNT=$(curl -s "https://api.github.com/repos/${{ github.repository }}/contributors" | jq -r ".[] | select(.login==\"$AUTHOR\") | .contributions // 0")
+        echo "Previous contributions: $COMMIT_COUNT"
+        
+        if [[ $COMMIT_COUNT -gt 0 ]] || [[ "$IS_MAINTAINER" == "true" ]]; then
+          echo "contributor-status=returning" >> $GITHUB_OUTPUT
+        else
+          echo "contributor-status=new" >> $GITHUB_OUTPUT
+        fi
+
+    - name: 📝 Generate Validation Report
+      id: validation-report
+      run: |
+        TEMPLATE_VALID="${{ steps.template-check.outputs.template-valid }}"
+        LABELS_VALID="${{ steps.label-check.outputs.labels-valid }}"
+        BRANCH_VALID="${{ steps.branch-check.outputs.branch-valid }}"
+        CONTRIBUTOR_STATUS="${{ steps.contributor-status.outputs.contributor-status }}"
+        IS_MAINTAINER="${{ steps.contributor-status.outputs.is-maintainer }}"
+        
+        # Calculate overall score
+        SCORE=0
+        if [[ "$TEMPLATE_VALID" == "true" ]]; then ((SCORE++)); fi
+        if [[ "$LABELS_VALID" == "true" ]]; then ((SCORE++)); fi
+        if [[ "$BRANCH_VALID" == "true" ]]; then ((SCORE++)); fi
+        
+        echo "Validation Score: $SCORE/3"
+        
+        # Determine auto-merge eligibility
+        if [[ $SCORE -eq 3 ]] || [[ "$IS_MAINTAINER" == "true" ]]; then
+          echo "auto-merge-eligible=true" >> $GITHUB_OUTPUT
+        else
+          echo "auto-merge-eligible=false" >> $GITHUB_OUTPUT
+        fi
+        
+        echo "validation-score=$SCORE" >> $GITHUB_OUTPUT
+
+    - name: 💬 Comment Validation Results
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const templateValid = '${{ steps.template-check.outputs.template-valid }}' === 'true';
+          const labelsValid = '${{ steps.label-check.outputs.labels-valid }}' === 'true';
+          const branchValid = '${{ steps.branch-check.outputs.branch-valid }}' === 'true';
+          const score = parseInt('${{ steps.validation-report.outputs.validation-score }}');
+          const contributorStatus = '${{ steps.contributor-status.outputs.contributor-status }}';
+          const isMaintainer = '${{ steps.contributor-status.outputs.is-maintainer }}' === 'true';
+          
+          let statusIcon = '🎉';
+          let statusText = 'Perfect!';
+          let autoMerge = '✅ Eligible for auto-merge';
+          
+          if (score < 3 && !isMaintainer) {
+            statusIcon = '⚠️';
+            statusText = 'Needs attention';
+            autoMerge = '❌ Not eligible for auto-merge yet';
+          }
+          
+          const welcomeMessage = contributorStatus === 'new' ? 
+            `\n### 👋 Welcome to Dungeon Game!\nThank you for your first contribution! We're excited to have you join our community of AI gaming enthusiasts.\n` : 
+            `\n### 🙏 Thank you for contributing again!\nWe appreciate your continued involvement in the Dungeon Game project.\n`;
+          
+          const body = `## ${statusIcon} Contributor Validation Report
+          ${welcomeMessage}
+          ### 📊 Validation Results (${score}/3)
+          
+          | Check | Status | Details |
+          |-------|--------|---------|
+          | 📋 PR Template | ${templateValid ? '✅' : '❌'} | ${templateValid ? 'Complete' : 'Missing required sections'} |
+          | 🏷️ Labels | ${labelsValid ? '✅' : '❌'} | ${labelsValid ? 'Valid labels applied' : 'Please add appropriate labels'} |
+          | 🌿 Branch Name | ${branchValid ? '✅' : '❌'} | ${branchValid ? 'Follows convention' : 'Use format: feature/description'} |
+          
+          ### 🤖 Auto-Merge Status
+          ${autoMerge}
+          ${isMaintainer ? '\n*Maintainer override: Auto-merge available*' : ''}
+          
+          ${score < 3 && !isMaintainer ? `
+          ### 🛠️ Next Steps
+          To enable auto-merge, please address the items marked with ❌ above:
+          
+          ${!templateValid ? '- **PR Template**: Use our template with all required sections\n' : ''}
+          ${!labelsValid ? '- **Labels**: Add labels like \`feature\`, \`bug\`, \`ai\`, \`ui\`, etc.\n' : ''}
+          ${!branchValid ? '- **Branch Name**: Rename to \`feature/description\` or similar\n' : ''}
+          
+          Once these are fixed, our automated system will validate your contribution and merge it automatically if all tests pass! 🚀
+          ` : `
+          ### 🚀 Next Steps
+          Your PR meets all contribution standards! Our automated validation will now:
+          1. ✅ Run code quality checks
+          2. ✅ Execute all tests
+          3. ✅ Perform security scans
+          4. ✅ Auto-merge if all checks pass
+          
+          No further action needed from you! 🎉
+          `}
+          
+          ---
+          *This validation runs automatically on every PR. For questions, see our [Contributing Guide](CONTRIBUTING.md)*`;
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: body
+          });
+
+    - name: 🏷️ Auto-label PR
+      if: steps.label-check.outputs.labels-valid == 'false'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          // Auto-suggest labels based on file changes
+          const hasCodeChanges = '${{ steps.file-check.outputs.has-code-changes }}' === 'true';
+          const hasTestChanges = '${{ steps.file-check.outputs.has-test-changes }}' === 'true';
+          const hasDocChanges = '${{ steps.file-check.outputs.has-doc-changes }}' === 'true';
+          
+          const suggestedLabels = [];
+          
+          if (hasCodeChanges) {
+            // Check if it's likely an AI-related change
+            const prTitle = context.payload.pull_request.title.toLowerCase();
+            const prBody = context.payload.pull_request.body.toLowerCase();
+            
+            if (prTitle.includes('ai') || prTitle.includes('learning') || prTitle.includes('algorithm') || 
+                prBody.includes('q-learning') || prBody.includes('ai')) {
+              suggestedLabels.push('ai');
+            } else if (prTitle.includes('ui') || prTitle.includes('interface') || prTitle.includes('window')) {
+              suggestedLabels.push('ui');
+            } else if (prTitle.includes('fix') || prTitle.includes('bug')) {
+              suggestedLabels.push('bug');
+            } else {
+              suggestedLabels.push('feature');
+            }
+          }
+          
+          if (hasTestChanges) {
+            suggestedLabels.push('tests');
+          }
+          
+          if (hasDocChanges) {
+            suggestedLabels.push('docs');
+          }
+          
+          // Add suggested labels
+          if (suggestedLabels.length > 0) {
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: suggestedLabels
+            });
+            
+            console.log(`Added suggested labels: ${suggestedLabels.join(', ')}`);
+          }
+
+    - name: 📊 Set Status Check
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const eligible = '${{ steps.validation-report.outputs.auto-merge-eligible }}' === 'true';
+          const score = '${{ steps.validation-report.outputs.validation-score }}';
+          
+          await github.rest.repos.createCommitStatus({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            sha: context.payload.pull_request.head.sha,
+            state: eligible ? 'success' : 'pending',
+            target_url: `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+            description: eligible ? 
+              `✅ All guidelines followed (${score}/3)` : 
+              `⚠️ Please address validation issues (${score}/3)`,
+            context: 'Contributor Validation'
+          });

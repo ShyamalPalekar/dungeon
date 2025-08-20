@@ -1,0 +1,29 @@
+name: "❓ Question"
+description: "Have a question? Let's discuss it in our community!"
+title: "[Question] "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🤔 Have a Question?
+        
+        For questions and general discussions, please use our **[Discussions](https://github.com/galihru/dungeon/discussions)** instead of creating an issue.
+        
+        This helps keep our issues focused on bugs and feature requests, while building a vibrant community space for all questions and conversations.
+        
+        ### Quick Links:
+        - 🎯 [General Discussions](https://github.com/galihru/dungeon/discussions/categories/general)
+        - 🆘 [Get Help](https://github.com/galihru/dungeon/discussions/categories/help)
+        - 🤖 [AI & Strategy](https://github.com/galihru/dungeon/discussions/categories/ai-strategy)
+        
+        **Click the link above to start a discussion instead!**
+  
+  - type: textarea
+    id: redirect-note
+    attributes:
+      label: "If this is actually a bug or feature request"
+      description: "Please close this issue and use the appropriate template instead"
+      placeholder: "This template is just to redirect questions to Discussions"
+    validations:
+      required: false
