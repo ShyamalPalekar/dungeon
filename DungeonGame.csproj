@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    
+    <!-- Application Information -->
+    <AssemblyTitle>Dungeon Game - Epic Adventure Awaits</AssemblyTitle>
+    <AssemblyDescription>Strategic AI-powered dungeon exploration game with Q-Learning algorithms</AssemblyDescription>
+    <AssemblyCompany>GALIH RIDHO UTOMO</AssemblyCompany>
+    <AssemblyProduct>Dungeon Game</AssemblyProduct>
+    <AssemblyCopyright>Copyright © 2025 GALIH RIDHO UTOMO. All rights reserved.</AssemblyCopyright>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <ProductVersion>1.0.0</ProductVersion>
+    
+    <!-- Publisher Information -->
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <!-- <ApplicationIcon>Assets\icon.ico</ApplicationIcon> -->
+    <PublisherName>GALIH RIDHO UTOMO</PublisherName>
+    <SupportUrl>https://github.com/galihru/dungeon</SupportUrl>
+    <UpdateUrl>https://github.com/galihru/dungeon/releases</UpdateUrl>
+    
+    <!-- Build Configuration -->
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <PublishSingleFile>false</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\**\*.*" />
+    <Resource Include="Theme\Styles.xaml" />
+    <Resource Include="Theme\ModernStyles.xaml" />
+  </ItemGroup>
+
+  <!-- NuGet Packages for Auto-Update and Installer -->
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Octokit" Version="8.0.1" />
+  </ItemGroup>
+</Project>

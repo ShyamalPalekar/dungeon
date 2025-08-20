@@ -1,0 +1,604 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+
+namespace DungeonGameApp
+{
+    // ------------------------------------------------------------
+    // Dungeon Game (Console) - Single vs AI + Local Hot-Seat
+    // - Solver DP untuk minimum initial health (persis problem LeetCode 174)
+    // - Gameplay: gerak hanya kanan / bawah, HP <= 0 langsung kalah
+    // - Mode: Single vs AI (bot memilih jalur optimal berdasar DP),
+    //         Multiplayer lokal (gantian keyboard, tanpa server)
+    // - Random dungeon / custom input
+    // ------------------------------------------------------------
+    // Tombol saat bermain:
+    //   → (Right Arrow) atau D : move Right
+    //   ↓ (Down Arrow)  atau S : move Down
+    //   Q : menyerah/keluar ke menu
+    //
+    // Catatan HP:
+    // - HP berkurang/bertambah sesuai nilai sel yang dimasuki.
+    // - Solver menghitung HP minimum agar "pasti" selamat jika mengikuti jalur optimal.
+    // ------------------------------------------------------------
+    class Program
+    {
+        static void Main()
+        {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+            Console.Title = "Dungeon Game (Console) - Single vs AI + Local MP (No Server)";
+
+            var defaultDungeon = new int[,]
+            {
+                { -2, -3,  3 },
+                { -5,-10,  1 },
+                { 10, 30, -5 }
+            };
+
+            int[,] dungeon = (int[,])defaultDungeon.Clone();
+
+            while (true)
+            {
+                Console.Clear();
+                PrintHeader("DUNGEON GAME (Console)");
+                Console.WriteLine("Pilih menu:");
+                Console.WriteLine("  1) Play: Single vs AI");
+                Console.WriteLine("  2) Play: Multiplayer Lokal (hot-seat, tanpa server)");
+                Console.WriteLine("  3) Solver Min Initial Health (DP)");
+                Console.WriteLine("  4) Ganti Dungeon: contoh (default)");
+                Console.WriteLine("  5) Ganti Dungeon: input manual");
+                Console.WriteLine("  6) Ganti Dungeon: generate acak");
+                Console.WriteLine("  0) Keluar");
+                Console.Write("Pilihan Anda: ");
+                var key = Console.ReadKey();
+                Console.WriteLine();
+
+                if (key.KeyChar == '0')
+                    break;
+
+                switch (key.KeyChar)
+                {
+                    case '1':
+                        PlaySingleVsAI(dungeon);
+                        break;
+                    case '2':
+                        PlayLocalMultiplayer(dungeon);
+                        break;
+                    case '3':
+                        RunSolverMenu(dungeon);
+                        break;
+                    case '4':
+                        dungeon = (int[,])defaultDungeon.Clone();
+                        Info("Dungeon direset ke contoh default.");
+                        Pause();
+                        break;
+                    case '5':
+                        dungeon = ReadDungeonFromUser();
+                        break;
+                    case '6':
+                        dungeon = GenerateRandomDungeon();
+                        break;
+                    default:
+                        Warn("Menu tidak dikenal.");
+                        Pause();
+                        break;
+                }
+            }
+        }
+
+        // ------------------ GAMEPLAY: Single vs AI ------------------
+
+        static void PlaySingleVsAI(int[,] dungeon)
+        {
+            Console.Clear();
+            PrintHeader("MODE: SINGLE vs AI (Bot)");
+            DrawDungeon(dungeon);
+
+            int m = dungeon.GetLength(0), n = dungeon.GetLength(1);
+
+            // DP table: min HP needed to ENTER cell (i,j) so that from there to goal guaranteed survive.
+            var dp = BuildDpTable(dungeon);
+
+            int minHP = dp[0, 0];
+            Success($"Minimum initial health (jalur optimal) = {minHP}");
+            Console.WriteLine();
+
+            int hp = minHP; // Mulai dengan HP minimum agar adil
+            int r = 0, c = 0;
+
+            Console.WriteLine("Giliran: Anda terlebih dulu.");
+            Console.WriteLine("Kontrol: Panah Kanan/↓ atau D/S. Q untuk menyerah.");
+            Console.WriteLine();
+
+            bool playerTurn = true; // Player jalan dulu
+            var path = new List<(int r, int c)>();
+            path.Add((0, 0));
+            int curValue = dungeon[r, c];
+            hp = ApplyCell(hp, curValue); // masuk sel start
+            DrawHUD(hp, r, c, playerTurn ? "Player" : "AI");
+
+            if (hp <= 0)
+            {
+                Fail("HP langsung 0 atau kurang di sel awal. Anda kalah.");
+                Pause();
+                return;
+            }
+
+            while (true)
+            {
+                if (r == m - 1 && c == n - 1)
+                {
+                    if (playerTurn)
+                        Success("Anda mencapai putri! Kemenangan Player!");
+                    else
+                        Fail("AI mencapai putri lebih dulu! AI menang.");
+                    Pause();
+                    return;
+                }
+
+                if (playerTurn)
+                {
+                    var move = ReadPlayerMove(r, c, m, n);
+                    if (move == Move.Quit)
+                    {
+                        Warn("Anda menyerah. AI menang.");
+                        Pause();
+                        return;
+                    }
+                    ApplyMove(move, ref r, ref c);
+                }
+                else
+                {
+                    var move = ChooseAIMove(r, c, dungeon, dp);
+                    ApplyMove(move, ref r, ref c);
+                    Info($"AI melangkah: {(move == Move.Right ? "Right" : "Down")}");
+                }
+
+                // Masuki sel baru
+                curValue = dungeon[r, c];
+                hp = ApplyCell(hp, curValue);
+                path.Add((r, c));
+                DrawDungeon(dungeon, path);
+                DrawHUD(hp, r, c, playerTurn ? "Player" : "AI");
+
+                if (hp <= 0)
+                {
+                    if (playerTurn)
+                        Fail("HP Anda <= 0. Anda kalah (AI menang).");
+                    else
+                        Success("HP AI <= 0. Selamat, Anda menang!");
+                    Pause();
+                    return;
+                }
+
+                playerTurn = !playerTurn;
+            }
+        }
+
+        // ----------------- GAMEPLAY: Local Multiplayer ----------------
+
+        static void PlayLocalMultiplayer(int[,] dungeon)
+        {
+            Console.Clear();
+            PrintHeader("MODE: MULTIPLAYER LOKAL (hot-seat, tanpa server)");
+            DrawDungeon(dungeon);
+
+            int m = dungeon.GetLength(0), n = dungeon.GetLength(1);
+            var dp = BuildDpTable(dungeon);
+            int minHP = dp[0, 0];
+            Console.WriteLine($"Sebagai baseline, minimum HP (jalur optimal) = {minHP}.");
+            Console.Write("Masukkan HP awal (kosong=pakai minimum): ");
+            var s = Console.ReadLine();
+            int hp = minHP;
+            if (!string.IsNullOrWhiteSpace(s) && int.TryParse(s, out var custom) && custom > 0)
+                hp = custom;
+
+            string p1 = InputNonEmpty("Nama Player 1 (default: P1): ", "P1");
+            string p2 = InputNonEmpty("Nama Player 2 (default: P2): ", "P2");
+
+            int r = 0, c = 0;
+            var path = new List<(int r, int c)>();
+            path.Add((0, 0));
+            hp = ApplyCell(hp, dungeon[0, 0]); // start cell
+            if (hp <= 0)
+            {
+                Fail("HP langsung 0 atau kurang di sel awal. Game tidak dapat dilanjutkan.");
+                Pause();
+                return;
+            }
+
+            bool isP1Turn = true;
+            while (true)
+            {
+                DrawDungeon(dungeon, path);
+                DrawHUD(hp, r, c, isP1Turn ? p1 : p2);
+                if (r == m - 1 && c == n - 1)
+                {
+                    if (isP1Turn)
+                        Success($"{p1} mencapai putri! {p1} menang.");
+                    else
+                        Success($"{p2} mencapai putri! {p2} menang.");
+                    Pause();
+                    return;
+                }
+
+                var move = ReadPlayerMove(r, c, m, n, $"{(isP1Turn ? p1 : p2)} giliran.");
+                if (move == Move.Quit)
+                {
+                    Warn($"{(isP1Turn ? p1 : p2)} menyerah. Lawan menang.");
+                    Pause();
+                    return;
+                }
+                ApplyMove(move, ref r, ref c);
+                hp = ApplyCell(hp, dungeon[r, c]);
+                path.Add((r, c));
+
+                if (hp <= 0)
+                {
+                    Fail($"HP <= 0 setelah langkah {(isP1Turn ? p1 : p2)}. " +
+                         $"{(isP1Turn ? p2 : p1)} menang.");
+                    Pause();
+                    return;
+                }
+
+                isP1Turn = !isP1Turn;
+            }
+        }
+
+        // ---------------------------- Solver --------------------------
+
+        static void RunSolverMenu(int[,] dungeon)
+        {
+            Console.Clear();
+            PrintHeader("SOLVER: Minimum Initial Health (DP)");
+            DrawDungeon(dungeon);
+            var dp = BuildDpTable(dungeon);
+            int minHP = dp[0, 0];
+
+            Success($"Minimum initial health = {minHP}");
+            Console.WriteLine();
+            Console.WriteLine("DP Table (min HP needed saat MEMASUKI sel [i,j]):");
+            PrintDp(dp);
+
+            Console.WriteLine();
+            Console.WriteLine("Jalur optimal (greedy by DP):");
+            var path = ReconstructGreedyPath(dp);
+            PrintPath(path);
+
+            Pause();
+        }
+
+        // -------------------------- Dungeon I/O -----------------------
+
+        static int[,] ReadDungeonFromUser()
+        {
+            Console.Clear();
+            PrintHeader("INPUT MANUAL DUNGEON");
+            Console.Write("m (rows) [1..200]: ");
+            int m = ReadIntInRange(1, 200);
+            Console.Write("n (cols) [1..200]: ");
+            int n = ReadIntInRange(1, 200);
+
+            var dungeon = new int[m, n];
+            Console.WriteLine("Masukkan baris demi baris, dipisahkan spasi (nilai di [-1000,1000]):");
+            for (int i = 0; i < m; i++)
+            {
+                while (true)
+                {
+                    Console.Write($"Row {i} = ");
+                    var parts = (Console.ReadLine() ?? "").Trim().Split(new[] { ' ', '\t', ',' },
+                        StringSplitOptions.RemoveEmptyEntries);
+                    if (parts.Length == n)
+                    {
+                        bool ok = true;
+                        for (int j = 0; j < n; j++)
+                        {
+                            if (int.TryParse(parts[j], NumberStyles.Integer, CultureInfo.InvariantCulture, out int val) &&
+                                val >= -1000 && val <= 1000)
+                            {
+                                dungeon[i, j] = val;
+                            }
+                            else { ok = false; break; }
+                        }
+                        if (ok) break;
+                    }
+                    Warn($"Input tidak valid. Harus {n} integer di [-1000,1000].");
+                }
+            }
+            Info("Dungeon tersimpan.");
+            Pause();
+            return dungeon;
+        }
+
+        static int[,] GenerateRandomDungeon()
+        {
+            Console.Clear();
+            PrintHeader("GENERATE DUNGEON ACAK");
+            Console.Write("m (rows) [1..30, default=6]: ");
+            int m = ReadOptionalInt(6, 1, 30);
+            Console.Write("n (cols) [1..30, default=6]: ");
+            int n = ReadOptionalInt(6, 1, 30);
+            Console.Write("Min cell value [-1000..1000, default=-10]: ");
+            int vmin = ReadOptionalInt(-10, -1000, 1000);
+            Console.Write("Max cell value [-1000..1000, default=10]: ");
+            int vmax = ReadOptionalInt(10, -1000, 1000);
+            if (vmin > vmax) (vmin, vmax) = (vmax, vmin);
+
+            var rng = new Random();
+            var dungeon = new int[m, n];
+            for (int i = 0; i < m; i++)
+                for (int j = 0; j < n; j++)
+                    dungeon[i, j] = rng.Next(vmin, vmax + 1);
+
+            Info("Dungeon acak dibuat.");
+            Pause();
+            return dungeon;
+        }
+
+        // --------------------------- DP Solver ------------------------
+
+        // Build DP: dp[i,j] = minimal HP needed to ENTER cell (i,j)
+        //           agar bisa mencapai goal tanpa mati.
+        // Transition (from problem 174):
+        //   need = min(dp[i+1,j], dp[i,j+1]) - dungeon[i,j]
+        //   dp[i,j] = max(1, need)
+        static int[,] BuildDpTable(int[,] dungeon)
+        {
+            int m = dungeon.GetLength(0), n = dungeon.GetLength(1);
+            var dp = new int[m, n];
+
+            // Base: bottom-right
+            dp[m - 1, n - 1] = Math.Max(1, 1 - dungeon[m - 1, n - 1]);
+
+            // Last row
+            for (int j = n - 2; j >= 0; j--)
+            {
+                int need = dp[m - 1, j + 1] - dungeon[m - 1, j];
+                dp[m - 1, j] = Math.Max(1, need);
+            }
+
+            // Last col
+            for (int i = m - 2; i >= 0; i--)
+            {
+                int need = dp[i + 1, n - 1] - dungeon[i, n - 1];
+                dp[i, n - 1] = Math.Max(1, need);
+            }
+
+            // Inside
+            for (int i = m - 2; i >= 0; i--)
+            {
+                for (int j = n - 2; j >= 0; j--)
+                {
+                    int nextNeed = Math.Min(dp[i + 1, j], dp[i, j + 1]);
+                    int need = nextNeed - dungeon[i, j];
+                    dp[i, j] = Math.Max(1, need);
+                }
+            }
+
+            return dp;
+        }
+
+        // Path reconstruction (greedy by dp): pilih langkah yang memberi kebutuhan HP terendah berikutnya
+        static List<(int r, int c)> ReconstructGreedyPath(int[,] dp)
+        {
+            int m = dp.GetLength(0), n = dp.GetLength(1);
+            int r = 0, c = 0;
+            var path = new List<(int, int)>();
+            path.Add((r, c));
+
+            while (r != m - 1 || c != n - 1)
+            {
+                int downNeed = int.MaxValue, rightNeed = int.MaxValue;
+                if (r + 1 < m) downNeed = dp[r + 1, c];
+                if (c + 1 < n) rightNeed = dp[r, c + 1];
+
+                if (downNeed <= rightNeed && r + 1 < m) r++;
+                else if (c + 1 < n) c++;
+                else break;
+
+                path.Add((r, c));
+            }
+            return path;
+        }
+
+        // ------------------------- AI Decision ------------------------
+
+        enum Move { Right, Down, Quit }
+
+        static Move ChooseAIMove(int r, int c, int[,] dungeon, int[,] dp)
+        {
+            int m = dungeon.GetLength(0), n = dungeon.GetLength(1);
+
+            bool canRight = c + 1 < n, canDown = r + 1 < m;
+            if (!canRight && !canDown) return Move.Right; // irrelevant
+            if (!canRight) return Move.Down;
+            if (!canDown) return Move.Right;
+
+            // Greedy by dp: pilih arah yang membutuhkan dp lebih kecil
+            int needRight = dp[r, c + 1];
+            int needDown = dp[r + 1, c];
+
+            if (needDown < needRight) return Move.Down;
+            if (needRight < needDown) return Move.Right;
+
+            // tie-breaker: pilih sel yang nilainya lebih menguntungkan
+            int valRight = dungeon[r, c + 1];
+            int valDown = dungeon[r + 1, c];
+            if (valRight >= valDown) return Move.Right;
+            return Move.Down;
+        }
+
+        // --------------------- Utility Gameplay -----------------------
+
+        static Move ReadPlayerMove(int r, int c, int m, int n, string prefix = null)
+        {
+            if (!string.IsNullOrWhiteSpace(prefix))
+                Console.WriteLine(prefix);
+
+            Console.Write("Langkah (→/D = Right, ↓/S = Down, Q = Menyerah): ");
+            while (true)
+            {
+                var key = Console.ReadKey(true);
+                if (key.Key == ConsoleKey.Q) { Console.WriteLine("Q"); return Move.Quit; }
+
+                if (key.Key == ConsoleKey.RightArrow || key.Key == ConsoleKey.D)
+                {
+                    if (c + 1 < n) { Console.WriteLine("Right"); return Move.Right; }
+                    Warn("Tidak bisa Right dari tepi kanan.");
+                }
+                else if (key.Key == ConsoleKey.DownArrow || key.Key == ConsoleKey.S)
+                {
+                    if (r + 1 < m) { Console.WriteLine("Down"); return Move.Down; }
+                    Warn("Tidak bisa Down dari tepi bawah.");
+                }
+                else
+                {
+                    Warn("Tombol tidak dikenal.");
+                }
+            }
+        }
+
+        static void ApplyMove(Move move, ref int r, ref int c)
+        {
+            if (move == Move.Right) c++;
+            else if (move == Move.Down) r++;
+        }
+
+        static int ApplyCell(int hp, int cellValue)
+        {
+            // Memasuki sel -> hp += cellValue
+            return hp + cellValue;
+        }
+
+        // --------------------------- UI Helpers -----------------------
+
+        static void DrawHUD(int hp, int r, int c, string turnOwner)
+        {
+            Console.WriteLine();
+            Console.WriteLine($"Posisi: ({r},{c})   HP: {hp}   Giliran: {turnOwner}");
+            Console.WriteLine();
+        }
+
+        static void DrawDungeon(int[,] dungeon, List<(int r, int c)> path = null)
+        {
+            int m = dungeon.GetLength(0), n = dungeon.GetLength(1);
+            path = path ?? new List<(int r, int c)>();
+            var pathSet = new HashSet<(int, int)>(path);
+
+            Console.WriteLine();
+            Console.WriteLine($"Dungeon {m}x{n} (negatif = demon, positif = orb):");
+            Console.WriteLine();
+
+            for (int i = 0; i < m; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    bool onPath = pathSet.Contains((i, j));
+                    string cell = dungeon[i, j].ToString().PadLeft(4);
+                    if (onPath)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.Write($"[{cell}]");
+                        Console.ResetColor();
+                    }
+                    else
+                    {
+                        Console.Write($" {cell} ");
+                    }
+                }
+                Console.WriteLine();
+            }
+            Console.WriteLine();
+            Console.WriteLine("Keterangan: kotak [berwarna] = jalur yang sudah dilalui.");
+            Console.WriteLine();
+        }
+
+        static void PrintDp(int[,] dp)
+        {
+            int m = dp.GetLength(0), n = dp.GetLength(1);
+            for (int i = 0; i < m; i++)
+            {
+                for (int j = 0; j < n; j++)
+                    Console.Write(dp[i, j].ToString().PadLeft(5));
+                Console.WriteLine();
+            }
+        }
+
+        static void PrintPath(List<(int r, int c)> path)
+        {
+            Console.WriteLine(string.Join(" -> ", path.Select(p => $"({p.r},{p.c})")));
+        }
+
+        static void PrintHeader(string title)
+        {
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("==================================================");
+            Console.WriteLine(title);
+            Console.WriteLine("==================================================");
+            Console.ResetColor();
+        }
+
+        static void Info(string s)
+        {
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine(s);
+            Console.ResetColor();
+        }
+
+        static void Success(string s)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine(s);
+            Console.ResetColor();
+        }
+
+        static void Warn(string s)
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine(s);
+            Console.ResetColor();
+        }
+
+        static void Fail(string s)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(s);
+            Console.ResetColor();
+        }
+
+        static void Pause()
+        {
+            Console.WriteLine();
+            Console.Write("Tekan tombol apa pun untuk lanjut...");
+            Console.ReadKey(true);
+        }
+
+        static string InputNonEmpty(string prompt, string fallback)
+        {
+            Console.Write(prompt);
+            var s = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(s)) return fallback;
+            return s.Trim();
+        }
+
+        static int ReadIntInRange(int lo, int hi)
+        {
+            while (true)
+            {
+                var s = Console.ReadLine();
+                if (int.TryParse(s, out var v) && v >= lo && v <= hi)
+                    return v;
+                Warn($"Masukkan integer [{lo}..{hi}]. Coba lagi: ");
+            }
+        }
+
+        static int ReadOptionalInt(int def, int lo, int hi)
+        {
+            var s = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(s)) return def;
+            if (int.TryParse(s, out var v) && v >= lo && v <= hi) return v;
+            return def;
+        }
+    }
+}

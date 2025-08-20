@@ -1,0 +1,92 @@
+<Window x:Class="DungeonGameWpf.Windows.LobbyWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Create Room (Local Hot-Seat)"
+        Width="520"
+        Height="340"
+        WindowStartupLocation="CenterOwner">
+
+    <Grid>
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,0"
+                    EndPoint="1,1">
+                <GradientStop Color="#FF0A0A0A"
+                        Offset="0"/>
+                <GradientStop Color="#FF1A1A2E"
+                        Offset="0.5"/>
+                <GradientStop Color="#FF16213E"
+                        Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+
+        <Border Style="{StaticResource Card}"
+                Margin="20">
+            <StackPanel>
+                <TextBlock Text="Create Local Room"
+                           Style="{StaticResource TitleText}"
+                           FontSize="22"
+                           Margin="0,0,0,8"/>
+                <TextBlock Text="Multiplayer lokal tanpa server — gantian satu PC (hot-seat)."
+                           Style="{StaticResource SubtitleText}"
+                           Opacity="0.8"/>
+                <StackPanel Orientation="Horizontal"
+                            Margin="0,10,0,0">
+                    <TextBlock Text="Player 1:"
+                               Width="80"/>
+                    <TextBox x:Name="TbP1"
+                             Width="160"
+                             Text="P1"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"
+                            Margin="0,6,0,0">
+                    <TextBlock Text="Player 2:"
+                               Width="80"/>
+                    <TextBox x:Name="TbP2"
+                             Width="160"
+                             Text="P2"/>
+                </StackPanel>
+
+                <Separator Margin="0,10,0,10"/>
+                <StackPanel Orientation="Horizontal"
+                            Margin="0,6,0,0">
+                    <TextBlock Text="Rows (m):"
+                               Width="80"/>
+                    <TextBox x:Name="TbM"
+                             Width="60"
+                             Text="3"/>
+                    <TextBlock Text="Cols (n):"
+                               Width="80"
+                               Margin="12,0,0,0"/>
+                    <TextBox x:Name="TbN"
+                             Width="60"
+                             Text="3"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"
+                            Margin="0,6,0,0">
+                    <TextBlock Text="Cell Min:"
+                               Width="80"/>
+                    <TextBox x:Name="TbMin"
+                             Width="60"
+                             Text="-10"/>
+                    <TextBlock Text="Cell Max:"
+                               Width="80"
+                               Margin="12,0,0,0"/>
+                    <TextBox x:Name="TbMax"
+                             Width="60"
+                             Text="10"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Right"
+                            Margin="0,16,0,0">
+                    <Button Style="{StaticResource FancyButton}"
+                            Width="110"
+                            Click="Start_Click">Start Room</Button>
+                    <Button Style="{StaticResource FancyButton}"
+                            Width="80"
+                            Click="Cancel_Click">Close</Button>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

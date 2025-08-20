@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <?define ProductName = "Dungeon Game" ?>
+  <?define ProductVersion = "1.0.0" ?>
+  <?define Manufacturer = "GALIH RIDHO UTOMO" ?>
+  <?define UpgradeCode = "12345678-1234-1234-1234-123456789012" ?>
+  
+  <Product Id="*" 
+           Name="$(var.ProductName)" 
+           Language="1033" 
+           Version="$(var.ProductVersion)" 
+           Manufacturer="$(var.Manufacturer)" 
+           UpgradeCode="$(var.UpgradeCode)">
+           
+    <Package InstallerVersion="200" 
+             Compressed="yes" 
+             InstallScope="perMachine" 
+             Description="Strategic AI-powered dungeon exploration game"
+             Keywords="Game,AI,Strategy,Dungeon,Q-Learning"
+             Comments="Built with .NET 9 and WPF" />
+
+    <!-- Upgrade Settings -->
+    <MajorUpgrade DowngradeErrorMessage="A newer version of $(var.ProductName) is already installed." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <!-- Installation Directory Structure -->
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFiles64Folder">
+        <Directory Id="ManufacturerFolder" Name="$(var.Manufacturer)">
+          <Directory Id="INSTALLFOLDER" Name="$(var.ProductName)" />
+        </Directory>
+      </Directory>
+      
+      <!-- Start Menu -->
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="$(var.ProductName)" />
+      </Directory>
+      
+      <!-- Desktop -->
+      <Directory Id="DesktopFolder" />
+    </Directory>
+
+    <!-- Main Application Files -->
+    <DirectoryRef Id="INSTALLFOLDER">
+      <Component Id="MainApplication" Guid="87654321-4321-4321-4321-210987654321">
+        <File Id="DungeonGameEXE" 
+              Source="publish\DungeonGame.exe" 
+              KeyPath="yes">
+          <Shortcut Id="ApplicationStartMenuShortcut"
+                    Directory="ApplicationProgramsFolder"
+                    Name="$(var.ProductName)"
+                    Description="Strategic AI-powered dungeon game"
+                    WorkingDirectory="INSTALLFOLDER"
+                    Icon="ApplicationIcon.exe" />
+          <Shortcut Id="ApplicationDesktopShortcut"
+                    Directory="DesktopFolder"
+                    Name="$(var.ProductName)"
+                    Description="Strategic AI-powered dungeon game"
+                    WorkingDirectory="INSTALLFOLDER"
+                    Icon="ApplicationIcon.exe" />
+        </File>
+        
+        <!-- Dependencies -->
+        <File Id="DungeonGameDLL" Source="publish\DungeonGame.dll" />
+        <File Id="NewtonsoftJson" Source="publish\Newtonsoft.Json.dll" />
+        <File Id="Octokit" Source="publish\Octokit.dll" />
+        
+        <!-- Assets -->
+        <File Id="README" Source="publish\README.md" />
+        <File Id="VERSION" Source="publish\version.json" />
+      </Component>
+      
+      <!-- Asset Files -->
+      <Component Id="GameAssets" Guid="11111111-2222-3333-4444-555555555555">
+        <File Id="IconFile" Source="Assets\icon.ico" />
+        <File Id="BackgroundMusic" Source="Assets\bgm.wav" />
+        <File Id="ClickSound" Source="Assets\click.wav" />
+        <File Id="WinSound" Source="Assets\win.wav" />
+        <File Id="LoseSound" Source="Assets\lose.wav" />
+      </Component>
+      
+      <!-- Theme Files -->
+      <Component Id="ThemeFiles" Guid="22222222-3333-4444-5555-666666666666">
+        <File Id="ModernStyles" Source="Theme\ModernStyles.xaml" />
+        <File Id="Styles" Source="Theme\Styles.xaml" />
+      </Component>
+    </DirectoryRef>
+
+    <!-- Registry Entries -->
+    <DirectoryRef Id="INSTALLFOLDER">
+      <Component Id="RegistryEntries" Guid="33333333-4444-5555-6666-777777777777">
+        <!-- Add/Remove Programs -->
+        <RegistryKey Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\$(var.ProductName)">
+          <RegistryValue Type="string" Name="DisplayName" Value="$(var.ProductName)" />
+          <RegistryValue Type="string" Name="DisplayVersion" Value="$(var.ProductVersion)" />
+          <RegistryValue Type="string" Name="Publisher" Value="$(var.Manufacturer)" />
+          <RegistryValue Type="string" Name="InstallLocation" Value="[INSTALLFOLDER]" />
+          <RegistryValue Type="string" Name="DisplayIcon" Value="[INSTALLFOLDER]DungeonGame.exe" />
+          <RegistryValue Type="integer" Name="NoModify" Value="1" />
+          <RegistryValue Type="integer" Name="NoRepair" Value="1" />
+          <RegistryValue Type="string" Name="UninstallString" Value="msiexec /x [ProductCode]" />
+          <RegistryValue Type="string" Name="HelpLink" Value="https://github.com/galihru/dungeon" />
+          <RegistryValue Type="string" Name="URLUpdateInfo" Value="https://github.com/galihru/dungeon/releases" />
+        </RegistryKey>
+        
+        <!-- File Associations -->
+        <RegistryKey Root="HKCR" Key=".dungeon">
+          <RegistryValue Type="string" Value="DungeonGame.SaveFile" />
+        </RegistryKey>
+        <RegistryKey Root="HKCR" Key="DungeonGame.SaveFile">
+          <RegistryValue Type="string" Value="Dungeon Game Save File" />
+          <RegistryKey Key="DefaultIcon">
+            <RegistryValue Type="string" Value="[INSTALLFOLDER]DungeonGame.exe,0" />
+          </RegistryKey>
+          <RegistryKey Key="shell\open\command">
+            <RegistryValue Type="string" Value="&quot;[INSTALLFOLDER]DungeonGame.exe&quot; &quot;%1&quot;" />
+          </RegistryKey>
+        </RegistryKey>
+      </Component>
+    </DirectoryRef>
+
+    <!-- Start Menu Uninstall Shortcut -->
+    <DirectoryRef Id="ApplicationProgramsFolder">
+      <Component Id="ApplicationShortcuts" Guid="44444444-5555-6666-7777-888888888888">
+        <Shortcut Id="UninstallProduct"
+                  Name="Uninstall $(var.ProductName)"
+                  Target="[SystemFolder]msiexec.exe"
+                  Arguments="/x [ProductCode]"
+                  Description="Uninstalls $(var.ProductName)" />
+        <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall" />
+        <RegistryValue Root="HKCU" 
+                       Key="Software\$(var.Manufacturer)\$(var.ProductName)" 
+                       Name="installed" 
+                       Type="integer" 
+                       Value="1" 
+                       KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+
+    <!-- Features -->
+    <Feature Id="ProductFeature" Title="$(var.ProductName)" Level="1">
+      <ComponentRef Id="MainApplication" />
+      <ComponentRef Id="GameAssets" />
+      <ComponentRef Id="ThemeFiles" />
+      <ComponentRef Id="RegistryEntries" />
+      <ComponentRef Id="ApplicationShortcuts" />
+    </Feature>
+
+    <!-- UI -->
+    <UIRef Id="WixUI_InstallDir" />
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+    
+    <!-- Custom UI Text -->
+    <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
+    <WixVariable Id="WixUIDialogBmp" Value="Bitmaps\dialog.bmp" />
+    <WixVariable Id="WixUIBannerBmp" Value="Bitmaps\banner.bmp" />
+
+    <!-- Icon -->
+    <Icon Id="ApplicationIcon.exe" SourceFile="Assets\icon.ico" />
+    <Property Id="ARPPRODUCTICON" Value="ApplicationIcon.exe" />
+
+    <!-- Installation Conditions -->
+    <Condition Message="This application requires Windows 10 or later.">
+      <![CDATA[Installed OR (VersionNT >= 1000)]]>
+    </Condition>
+    
+    <!-- Custom Actions -->
+    <CustomAction Id="LaunchApplication" 
+                  FileKey="DungeonGameEXE" 
+                  ExeCommand="" 
+                  Execute="immediate" 
+                  Impersonate="yes" 
+                  Return="asyncNoWait" />
+
+    <!-- Launch App after Install -->
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" 
+              Value="Launch $(var.ProductName)" />
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOX" Value="1" />
+    
+    <InstallExecuteSequence>
+      <Custom Action="LaunchApplication" After="InstallFinalize">
+        <![CDATA[WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed]]>
+      </Custom>
+    </InstallExecuteSequence>
+  </Product>
+</Wix>

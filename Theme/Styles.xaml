@@ -1,0 +1,104 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Warna tema -->
+    <Color x:Key="PrimaryColor">#FF3AAFA9</Color>
+    <Color x:Key="AccentColor">#FFFFC857</Color>
+    <SolidColorBrush x:Key="PrimaryBrush"
+                     Color="{StaticResource PrimaryColor}"/>
+    <SolidColorBrush x:Key="AccentBrush"
+                     Color="{StaticResource AccentColor}"/>
+    <SolidColorBrush x:Key="BgBrush"
+                     Color="#FF0F1822"/>
+    <SolidColorBrush x:Key="CardBrush"
+                     Color="#FF1B2A38"/>
+    <SolidColorBrush x:Key="TextBrush"
+                     Color="#FFE6EEF5"/>
+
+    <Style TargetType="Window">
+        <Setter Property="Background"
+                Value="{StaticResource BgBrush}"/>
+        <Setter Property="Foreground"
+                Value="{StaticResource TextBrush}"/>
+        <Setter Property="FontFamily"
+                Value="Segoe UI"/>
+    </Style>
+
+    <!-- Tombol animasi (scale + ripple sederhana) -->
+    <Style x:Key="FancyButton"
+           TargetType="Button">
+        <Setter Property="Background"
+                Value="{StaticResource PrimaryBrush}"/>
+        <Setter Property="Foreground"
+                Value="White"/>
+        <Setter Property="Padding"
+                Value="12,8"/>
+        <Setter Property="Margin"
+                Value="6"/>
+        <Setter Property="Cursor"
+                Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Border x:Name="bd"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="10"
+                                BorderBrush="{StaticResource AccentBrush}"
+                                BorderThickness="1">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter TargetName="bd"
+                                    Property="Background"
+                                    Value="{StaticResource AccentBrush}"/>
+                        </Trigger>
+                        <EventTrigger RoutedEvent="Button.PreviewMouseLeftButtonDown">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetName="bd"
+                                                     Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                                                     From="1"
+                                                     To="0.95"
+                                                     Duration="0:0:0.08"
+                                                     AutoReverse="True"/>
+                                    <DoubleAnimation Storyboard.TargetName="bd"
+                                                     Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                                                     From="1"
+                                                     To="0.95"
+                                                     Duration="0:0:0.08"
+                                                     AutoReverse="True"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="RenderTransformOrigin"
+                Value="0.5,0.5"/>
+        <Setter Property="RenderTransform">
+            <Setter.Value>
+                <ScaleTransform ScaleX="1"
+                                ScaleY="1"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Kartu panel -->
+    <Style x:Key="Card"
+           TargetType="Border">
+        <Setter Property="Background"
+                Value="{StaticResource CardBrush}"/>
+        <Setter Property="CornerRadius"
+                Value="16"/>
+        <Setter Property="Padding"
+                Value="16"/>
+        <Setter Property="Margin"
+                Value="8"/>
+    </Style>
+</ResourceDictionary>

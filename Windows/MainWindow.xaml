@@ -1,0 +1,391 @@
+<Window x:Class="DungeonGameWpf.Windows.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="🎮 Dungeon Game - Epic Adventure Awaits"
+        Width="1200"
+        Height="800"
+        WindowStartupLocation="CenterScreen"
+        WindowState="Maximized">
+
+    <!-- Background with animated gradient -->
+    <Grid>
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,0"
+                                 EndPoint="1,1">
+                <GradientStop Color="#FF0A0A0A"
+                              Offset="0"/>
+                <GradientStop Color="#FF1A1A2E"
+                              Offset="0.3"/>
+                <GradientStop Color="#FF16213E"
+                              Offset="0.7"/>
+                <GradientStop Color="#FF0F3460"
+                              Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1.2*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Left Panel - Game Info & Branding -->
+        <Border Style="{StaticResource Card}"
+                Grid.Column="0"
+                Margin="20">
+            <StackPanel>
+                <!-- Logo Section -->
+                <TextBlock Text="🏰 DUNGEON GAME"
+                           Style="{StaticResource TitleText}"
+                           FontSize="48"
+                           HorizontalAlignment="Center"
+                           Margin="0,20,0,20"/>
+
+                <!-- Subtitle -->
+                <TextBlock Text="Epic Adventure Awaits - Battle with AI"
+                           Style="{StaticResource SubtitleText}"
+                           HorizontalAlignment="Center"
+                           FontSize="18"
+                           Margin="0,0,0,20"/>
+
+                <!-- Game Features -->
+                <Border Background="#22FFFFFF"
+                        CornerRadius="15"
+                        Padding="20"
+                        Margin="0,10">
+                    <StackPanel>
+                        <TextBlock Text="🎯 GAME FEATURES"
+                                   Style="{StaticResource TitleText}"
+                                   FontSize="16"
+                                   Margin="0,0,0,10"/>
+
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="0,5">
+                            <TextBlock Text="🧠"
+                                       FontSize="16"
+                                       Margin="0,0,10,0"/>
+                            <TextBlock Text="Advanced AI with Q-Learning Algorithm"
+                                       Style="{StaticResource SubtitleText}"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="0,5">
+                            <TextBlock Text="⚡"
+                                       FontSize="16"
+                                       Margin="0,0,10,0"/>
+                            <TextBlock Text="Dynamic Programming Solver Built-in"
+                                       Style="{StaticResource SubtitleText}"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="0,5">
+                            <TextBlock Text="🎮"
+                                       FontSize="16"
+                                       Margin="0,0,10,0"/>
+                            <TextBlock Text="Multiple Difficulty Levels &amp; Game Modes"
+                                       Style="{StaticResource SubtitleText}"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="0,5">
+                            <TextBlock Text="🎪"
+                                       FontSize="16"
+                                       Margin="0,0,10,0"/>
+                            <TextBlock Text="Special Tiles, Power-ups &amp; Abilities"
+                                       Style="{StaticResource SubtitleText}"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="0,5">
+                            <TextBlock Text="📊"
+                                       FontSize="16"
+                                       Margin="0,0,10,0"/>
+                            <TextBlock Text="Real-time Performance Analytics"
+                                       Style="{StaticResource SubtitleText}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- AI Status Indicator -->
+                <Border Background="#22FF6B35"
+                        CornerRadius="10"
+                        Padding="15"
+                        Margin="0,15,0,0">
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center">
+                        <Ellipse Width="12"
+                                 Height="12"
+                                 Fill="{StaticResource SuccessBrush}"
+                                 Margin="0,0,10,0">
+                            <Ellipse.Triggers>
+                                <EventTrigger RoutedEvent="Loaded">
+                                    <BeginStoryboard>
+                                        <Storyboard RepeatBehavior="Forever">
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                             From="0.3"
+                                                             To="1.0"
+                                                             Duration="0:0:1"
+                                                             AutoReverse="True"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </Ellipse.Triggers>
+                        </Ellipse>
+                        <TextBlock Text="🤖 AI System Online - Ready for Battle!"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource SuccessBrush}"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Border>
+
+        <!-- Right Panel - Main Menu -->
+        <Border Grid.Column="1"
+                Style="{StaticResource Card}"
+                Margin="20">
+            <Grid>
+                <StackPanel HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Width="400">
+
+                    <!-- Menu Header -->
+                    <TextBlock Text="🎮 MAIN MENU"
+                               Style="{StaticResource TitleText}"
+                               HorizontalAlignment="Center"
+                               FontSize="28"
+                               Margin="0,0,0,30"/>
+
+                    <!-- Menu Buttons -->
+                    <Button Style="{StaticResource FancyButton}"
+                            Click="Start_Click"
+                            Height="55"
+                            Margin="0,8">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="⚔️"
+                                       FontSize="20"
+                                       Margin="0,0,10,0"/>
+                            <TextBlock Text="Start Epic Battle (vs AI)"
+                                       FontSize="16"
+                                       FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Style="{StaticResource FancyButton}"
+                            Click="CreateRoom_Click"
+                            Height="55"
+                            Margin="0,8">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="👥"
+                                       FontSize="20"
+                                       Margin="0,0,10,0"/>
+                            <TextBlock Text="Local Multiplayer Arena"
+                                       FontSize="16"
+                                       FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Style="{StaticResource FancyButton}"
+                            Click="TrainAI_Click"
+                            Height="55"
+                            Margin="0,8">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="🧠"
+                                       FontSize="20"
+                                       Margin="0,0,10,0"/>
+                            <TextBlock Text="AI Training Laboratory"
+                                       FontSize="16"
+                                       FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Style="{StaticResource FancyButton}"
+                            Click="Tutorial_Click"
+                            Height="55"
+                            Margin="0,8">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="📚"
+                                       FontSize="20"
+                                       Margin="0,0,10,0"/>
+                            <TextBlock Text="Tutorial &amp; Game Guide"
+                                       FontSize="16"
+                                       FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Style="{StaticResource FancyButton}"
+                            Click="Settings_Click"
+                            Height="55"
+                            Margin="0,8">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="⚙️"
+                                       FontSize="20"
+                                       Margin="0,0,10,0"/>
+                            <TextBlock Text="Game Settings"
+                                       FontSize="16"
+                                       FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Style="{StaticResource FancyButton}"
+                            Click="Help_Click"
+                            Height="55"
+                            Margin="0,8">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="❓"
+                                       FontSize="20"
+                                       Margin="0,0,10,0"/>
+                            <TextBlock Text="Help &amp; Support"
+                                       FontSize="16"
+                                       FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Style="{StaticResource DangerButton}"
+                            Click="Exit_Click"
+                            Height="55"
+                            Margin="0,15,0,0">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="🚪"
+                                       FontSize="20"
+                                       Margin="0,0,10,0"/>
+                            <TextBlock Text="Exit Game"
+                                       FontSize="16"
+                                       FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Settings Toggle -->
+                    <CheckBox x:Name="ChkShowWelcomeOnStart"
+                              Content="🎬 Show Epic Intro on Startup"
+                              Margin="0,20,0,0"
+                              HorizontalAlignment="Center"
+                              IsChecked="True"
+                              FontSize="14"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Epic Splash Screen Overlay -->
+        <Grid x:Name="SplashOverlay"
+              Grid.ColumnSpan="2"
+              Background="#DD000000"
+              Visibility="Collapsed">
+            <Grid.Resources>
+                <Storyboard x:Key="SplashAnimation">
+                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                     From="0"
+                                     To="1"
+                                     Duration="0:0:1.5"/>
+                    <DoubleAnimation Storyboard.TargetName="SplashContent"
+                                     Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                                     From="0.8"
+                                     To="1.0"
+                                     Duration="0:0:1.5">
+                        <DoubleAnimation.EasingFunction>
+                            <BackEase EasingMode="EaseOut"/>
+                        </DoubleAnimation.EasingFunction>
+                    </DoubleAnimation>
+                    <DoubleAnimation Storyboard.TargetName="SplashContent"
+                                     Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                                     From="0.8"
+                                     To="1.0"
+                                     Duration="0:0:1.5">
+                        <DoubleAnimation.EasingFunction>
+                            <BackEase EasingMode="EaseOut"/>
+                        </DoubleAnimation.EasingFunction>
+                    </DoubleAnimation>
+                </Storyboard>
+            </Grid.Resources>
+
+            <Border x:Name="SplashContent"
+                    Style="{StaticResource Card}"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Width="800"
+                    Height="600"
+                    RenderTransformOrigin="0.5,0.5">
+                <Border.RenderTransform>
+                    <ScaleTransform ScaleX="1"
+                                    ScaleY="1"/>
+                </Border.RenderTransform>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Splash Image -->
+                    <StackPanel Grid.Row="0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center">
+                        <Image Source="/Assets/splash.png"
+                               Stretch="Uniform"
+                               Height="300"
+                               Margin="0,0,0,20">
+                            <Image.Effect>
+                                <DropShadowEffect Color="{StaticResource PrimaryColor}"
+                                                  BlurRadius="25"
+                                                  ShadowDepth="0"
+                                                  Opacity="0.8"/>
+                            </Image.Effect>
+                        </Image>
+
+                        <TextBlock Text="🏰 WELCOME TO DUNGEON GAME 🏰"
+                                   Style="{StaticResource TitleText}"
+                                   HorizontalAlignment="Center"
+                                   FontSize="36"
+                                   Margin="0,0,0,15"/>
+                    </StackPanel>
+
+                    <!-- Game Instructions -->
+                    <Border Grid.Row="1"
+                            Background="#22FFFFFF"
+                            CornerRadius="15"
+                            Padding="25"
+                            Margin="20,10">
+                        <StackPanel>
+                            <TextBlock Text="🎯 MISSION BRIEFING"
+                                       FontWeight="Bold"
+                                       FontSize="20"
+                                       Foreground="{StaticResource AccentBrush}"
+                                       HorizontalAlignment="Center"
+                                       Margin="0,0,0,15"/>
+
+                            <TextBlock Style="{StaticResource SubtitleText}"
+                                       TextWrapping="Wrap"
+                                       TextAlignment="Center"
+                                       FontSize="16"
+                                       LineHeight="24">
+                                🎮 <Bold>Objective:</Bold> Navigate to the bottom-right corner to rescue the princess!<LineBreak/>
+                                ⚔️ <Bold>Movement:</Bold> Use RIGHT and DOWN arrows only (classic mode)<LineBreak/>
+                                💎 <Bold>Tiles:</Bold> Negative values = Demons (damage), Positive = Healing Orbs<LineBreak/>
+                                🧠 <Bold>AI Companion:</Bold> Advanced Q-Learning agent learns from every battle<LineBreak/>
+                                📊 <Bold>DP Solver:</Bold> Shows minimum HP required for guaranteed victory<LineBreak/>
+                                🎪 <Bold>Special Features:</Bold> Power-ups, teleporters, keys, and epic boss battles!
+                            </TextBlock>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Action Button -->
+                    <Button Grid.Row="2"
+                            Style="{StaticResource SuccessButton}"
+                            Click="DismissSplash_Click"
+                            HorizontalAlignment="Center"
+                            Width="200"
+                            Height="60"
+                            Margin="0,20,0,0">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="🚀"
+                                       FontSize="24"
+                                       Margin="0,0,10,0"/>
+                            <TextBlock Text="Begin Adventure!"
+                                       FontSize="18"
+                                       FontWeight="Bold"/>
+                        </StackPanel>
+                    </Button>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>
