@@ -25,6 +25,11 @@
     <SupportUrl>https://github.com/galihru/dungeon</SupportUrl>
     <UpdateUrl>https://github.com/galihru/dungeon/releases</UpdateUrl>
     
+    <!-- Additional Publisher Metadata -->
+    <ApplicationPublisher>GALIH RIDHO UTOMO</ApplicationPublisher>
+    <PublisherDisplayName>GALIH RIDHO UTOMO</PublisherDisplayName>
+    <Copyright>Copyright © 2025 GALIH RIDHO UTOMO. All rights reserved.</Copyright>
+    
     <!-- Build Configuration -->
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
