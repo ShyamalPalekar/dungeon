@@ -19,11 +19,14 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <!-- <ApplicationIcon>Assets\icon.ico</ApplicationIcon> -->
     <PublisherName>GALIH RIDHO UTOMO</PublisherName>
+    <Authors>GALIH RIDHO UTOMO</Authors>
+    <Company>GALIH RIDHO UTOMO</Company>
+    <Product>Dungeon Game</Product>
     <SupportUrl>https://github.com/galihru/dungeon</SupportUrl>
     <UpdateUrl>https://github.com/galihru/dungeon/releases</UpdateUrl>
     
     <!-- Build Configuration -->
-    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     <PublishSingleFile>false</PublishSingleFile>
     <SelfContained>true</SelfContained>
