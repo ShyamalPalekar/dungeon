@@ -12,7 +12,7 @@ assignees: ["galihru"]
 
 Please use one of these secure reporting methods instead:
 - **GitHub Security Advisory**: [Create Private Vulnerability Report](https://github.com/galihru/DungeonGame/security/advisories/new)
-- **Email**: security@galihutomo.dev (if available)
+- **Email**: g4lihru@gmail.com
 - **Direct Message**: Contact @galihru directly
 
 **Only use this public template for:**

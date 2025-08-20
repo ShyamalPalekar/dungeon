@@ -60,7 +60,7 @@ We provide security updates for the following versions:
 
 ### Responsible Disclosure Process
 
-1. **Email**: Send details to **security@galihutomo.dev** (if available) or create a private vulnerability report
+1. **Email**: Send details to **g4lihru@gmail.com** or create a private vulnerability report
 2. **GitHub Security**: Use GitHub's private vulnerability reporting feature
 3. **Direct Contact**: Message the project maintainer directly
 
@@ -156,7 +156,7 @@ This security policy is reviewed and updated:
 
 ### Security Team
 - **Project Lead**: GALIH RIDHO UTOMO
-- **Security Email**: [Create security email if needed]
+- **Security Email**: g4lihru@gmail.com
 - **GitHub**: [@galihru](https://github.com/galihru)
 
 ### Emergency Contacts

@@ -1,0 +1,39 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "Dungeon Game with Q-Learning AI"
+abstract: "An educational gaming platform for reinforcement learning that demonstrates Q-Learning algorithms in a dungeon exploration environment. Built with C# and WPF, this project serves as a practical example for understanding machine learning concepts in game development."
+authors:
+  - family-names: "Utomo"
+    given-names: "Galih Ridho"
+    orcid: "https://orcid.org/0000-0003-4254-2142"
+    email: "g4lihru@gmail.com"
+    affiliation: "Universitas Negeri Semarang (UNNES)"
+repository-code: "https://github.com/galihru/DungeonGame"
+url: "https://github.com/galihru/DungeonGame"
+license: MIT
+keywords:
+  - "Q-Learning"
+  - "Reinforcement Learning"
+  - "Game Development"
+  - "Machine Learning"
+  - "Educational Software"
+  - "AI Programming"
+  - "C#"
+  - "WPF"
+  - "Gaming AI"
+version: "1.0.0"
+date-released: "2025-08-20"
+preferred-citation:
+  type: software
+  title: "Dungeon Game with Q-Learning AI: An Educational Gaming Platform for Reinforcement Learning"
+  authors:
+    - family-names: "Utomo"
+      given-names: "Galih Ridho"
+      orcid: "https://orcid.org/0000-0003-4254-2142"
+      email: "g4lihru@gmail.com"
+      affiliation: "Universitas Negeri Semarang (UNNES)"
+  repository-code: "https://github.com/galihru/DungeonGame"
+  url: "https://github.com/galihru/DungeonGame"
+  year: 2025
+  license: MIT
