@@ -40,12 +40,14 @@ Dungeon Game adalah sebuah permainan strategi berbasis AI yang menggabungkan kec
 ## 🤖 AI System Details
 
 ### Q-Learning Implementation
+
 - **State Space**: Posisi (r,c) di grid dungeon
 - **Action Space**: Right atau Down movement
 - **Reward System**: Berbasis HP tersisa dan completion
 - **Exploration vs Exploitation**: Epsilon-greedy dengan decay
 
 ### Difficulty Levels
+
 - **Beginner**: High exploration, random moves
 - **Intermediate**: Balanced strategy
 - **Expert**: Low exploration, calculated moves
@@ -62,17 +64,21 @@ Dungeon Game adalah sebuah permainan strategi berbasis AI yang menggabungkan kec
 ## 🎨 Screenshots
 
 ### Main Menu
+
 Modern dark theme dengan navigation yang intuitif
 
 ### Gameplay
+
 Turn-based strategic combat dengan AI opponent
 
 ### AI Training
+
 Train AI dengan berbagai dungeon layouts
 
 ## 🏗️ Technical Architecture
 
 ### Built With
+
 - **Framework**: .NET 9, WPF (Windows Presentation Foundation)
 - **AI**: Custom Q-Learning implementation
 - **UI**: Modern XAML styling dengan dark theme
@@ -80,6 +86,7 @@ Train AI dengan berbagai dungeon layouts
 - **Updates**: GitHub API integration untuk auto-updates
 
 ### Project Structure
+
 ```
 DungeonGame/
 ├── 🧠 AI/                    # Q-Learning algorithms
@@ -93,6 +100,7 @@ DungeonGame/
 ## 🔄 Auto-Update System
 
 Game dilengkapi dengan sistem update otomatis yang:
+
 - ✅ Check GitHub releases secara background
 - ✅ Notifikasi user ketika ada versi baru
 - ✅ One-click download dan installation
@@ -101,6 +109,7 @@ Game dilengkapi dengan sistem update otomatis yang:
 ## 🛠️ Development
 
 ### Building from Source
+
 ```bash
 git clone https://github.com/galihru/dungeon.git
 cd dungeon
@@ -110,6 +119,7 @@ dotnet run
 ```
 
 ### Creating Distribution
+
 ```bash
 # Simple build
 .\build-installer.bat
@@ -121,12 +131,14 @@ dotnet run
 ## 📈 Roadmap
 
 ### Version 1.1.0 (Planned)
+
 - [ ] Multiplayer online support
 - [ ] More dungeon layouts
 - [ ] Achievement system
 - [ ] Leaderboard integration
 
 ### Version 1.2.0 (Future)
+
 - [ ] Custom dungeon editor
 - [ ] AI vs AI tournament mode
 - [ ] Steam integration
@@ -135,6 +147,7 @@ dotnet run
 ## 🤝 Contributing
 
 Contributions welcome! Areas yang bisa di-improve:
+
 - **AI Algorithm**: Enhance Q-Learning parameters
 - **UI/UX**: New themes, animations, accessibility
 - **Game Features**: New game modes, mechanics
@@ -147,8 +160,9 @@ MIT License - see [LICENSE](LICENSE) file for details.
 ## 👨‍💻 Developer
 
 **GALIH RIDHO UTOMO**
+
 - 📧 GitHub: [@galihru](https://github.com/galihru)
-- 🎮 Repository: https://github.com/galihru/dungeon
+- 🎮 Repository: <https://github.com/galihru/dungeon>
 - 💼 Professional Game Development & AI Implementation
 
 ---
@@ -156,6 +170,7 @@ MIT License - see [LICENSE](LICENSE) file for details.
 ## 🎉 Changelog
 
 ### v1.0.0 (2025-08-20)
+
 - ✅ Initial release
 - ✅ Q-Learning AI system
 - ✅ Multiple difficulty levels
