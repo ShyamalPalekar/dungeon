@@ -3,10 +3,27 @@
   <assemblyIdentity version="1.0.0.0" 
                     name="DungeonGame.app"
                     processorArchitecture="amd64"
-                    type="win32"/>
+                    type="win32"
+                    publicKeyToken=""
+                    language="neutral"/>
   
   <!-- Application Description -->
   <description>Dungeon Game by GALIH RIDHO UTOMO - Strategic AI-powered adventure</description>
+  
+  <!-- Publisher Identity -->
+  <assemblyIdentity name="GALIH RIDHO UTOMO" 
+                    version="1.0.0.0" 
+                    type="win32" 
+                    processorArchitecture="amd64"/>
+  
+  <!-- Application Identity for Publisher -->
+  <application xmlns="urn:schemas-microsoft-com:asm.v3">
+    <windowsSettings>
+      <dpiAware xmlns="http://schemas.microsoft.com/SMI/2005/WindowsSettings">true/pm</dpiAware>
+      <dpiAwareness xmlns="http://schemas.microsoft.com/SMI/2016/WindowsSettings">permonitorv2</dpiAwareness>
+      <longPathAware xmlns="http://schemas.microsoft.com/SMI/2016/WindowsSettings">true</longPathAware>
+    </windowsSettings>
+  </application>
   
   <!-- Trust Information -->
   <trustInfo xmlns="urn:schemas-microsoft-com:asm.v2">

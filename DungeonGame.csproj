@@ -16,7 +16,7 @@
     <ProductVersion>1.0.0</ProductVersion>
     
     <!-- Publisher Information -->
-    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationManifest>app-publisher.manifest</ApplicationManifest>
     <!-- <ApplicationIcon>Assets\icon.ico</ApplicationIcon> -->
     <PublisherName>GALIH RIDHO UTOMO</PublisherName>
     <Authors>GALIH RIDHO UTOMO</Authors>
