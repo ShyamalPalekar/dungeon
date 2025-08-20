@@ -55,4 +55,4 @@ Experience the ultimate dungeon exploration game powered by advanced Q-Learning 
 
 **Developer**: GALIH RIDHO UTOMO  
 **License**: Proprietary  
-**Support**: https://github.com/galihru/dungeon/issues
+**Support**: <https://github.com/galihru/dungeon/issues>

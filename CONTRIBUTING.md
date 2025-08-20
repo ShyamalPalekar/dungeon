@@ -26,6 +26,7 @@ Before contributing, ensure you have:
 ### Setting Up Development Environment
 
 1. **Fork the repository**
+
    ```bash
    # Click "Fork" on GitHub, then clone your fork
    git clone https://github.com/YOUR_USERNAME/dungeon.git
@@ -33,16 +34,19 @@ Before contributing, ensure you have:
    ```
 
 2. **Set up upstream remote**
+
    ```bash
    git remote add upstream https://github.com/galihru/dungeon.git
    ```
 
 3. **Install dependencies**
+
    ```bash
    dotnet restore
    ```
 
 4. **Build and test**
+
    ```bash
    dotnet build
    dotnet run
@@ -51,18 +55,21 @@ Before contributing, ensure you have:
 ## 📝 Types of Contributions
 
 ### 🐛 Bug Reports
+
 - Use GitHub Issues with the "bug" label
 - Include detailed reproduction steps
 - Provide system information (OS, .NET version)
 - Include screenshots or error logs
 
 ### ✨ Feature Requests
+
 - Use GitHub Issues with the "enhancement" label
 - Clearly describe the proposed feature
 - Explain the use case and benefits
 - Consider AI/ML implications if applicable
 
 ### 🔧 Code Contributions
+
 - AI algorithm improvements
 - Game mechanics enhancements
 - Performance optimizations
@@ -70,16 +77,17 @@ Before contributing, ensure you have:
 - Bug fixes and stability improvements
 
 ### 📚 Documentation
+
 - Code documentation and comments
 - README improvements
 - API documentation
 - Tutorial content
 - Community guidelines
 
-
 ## � Development Workflow
 
 ### 1. Create a Branch
+
 ```bash
 # Always create from main branch
 git checkout main
@@ -88,6 +96,7 @@ git checkout -b feature/your-feature-name
 ```
 
 ### 2. Branch Naming Convention
+
 - `feature/description` - New features
 - `fix/issue-number` - Bug fixes
 - `docs/description` - Documentation updates
@@ -97,6 +106,7 @@ git checkout -b feature/your-feature-name
 ### 3. Code Standards
 
 #### C# Code Style
+
 ```csharp
 // Use PascalCase for public members
 public class GameEngine
@@ -115,6 +125,7 @@ public class GameEngine
 ```
 
 #### Code Quality Requirements
+
 - **Null safety**: Use nullable reference types
 - **Error handling**: Proper try-catch blocks
 - **Logging**: Use structured logging
@@ -124,6 +135,7 @@ public class GameEngine
 ### 4. AI/ML Specific Guidelines
 
 #### Q-Learning Implementation
+
 ```csharp
 // Follow established patterns for AI components
 public class QLearningAgent : IAgent
@@ -144,6 +156,7 @@ public class QLearningAgent : IAgent
 ```
 
 #### Performance Considerations
+
 - Optimize training loops
 - Implement efficient state representation
 - Use appropriate data structures
@@ -152,6 +165,7 @@ public class QLearningAgent : IAgent
 ## 🧪 Testing Guidelines
 
 ### Running Tests
+
 ```bash
 # Run all tests
 dotnet test
@@ -162,6 +176,7 @@ dotnet test --filter Category=UI
 ```
 
 ### Test Structure
+
 ```csharp
 [Test]
 public void QLearningAgent_ShouldLearnOptimalPath()
@@ -182,6 +197,7 @@ public void QLearningAgent_ShouldLearnOptimalPath()
 ## 📋 Pull Request Process
 
 ### 1. Before Submitting
+
 - [ ] Code builds without errors
 - [ ] All tests pass
 - [ ] Code follows style guidelines
@@ -189,6 +205,7 @@ public void QLearningAgent_ShouldLearnOptimalPath()
 - [ ] Self-review completed
 
 ### 2. Pull Request Template
+
 Your PR should include:
 
 ```markdown
@@ -225,7 +242,9 @@ Brief description of changes
 ```
 
 ### 3. Automated Validation
+
 Our CI/CD pipeline automatically:
+
 - ✅ Builds the project
 - ✅ Runs all tests
 - ✅ Checks code formatting
@@ -236,6 +255,7 @@ Our CI/CD pipeline automatically:
 ## 🤖 AI Development Guidelines
 
 ### Algorithm Modifications
+
 When working on Q-Learning or other AI components:
 
 1. **Preserve backward compatibility** where possible
@@ -244,6 +264,7 @@ When working on Q-Learning or other AI components:
 4. **Test with various environments** and difficulty levels
 
 ### Training Data and Models
+
 - Store training configurations in `configs/` directory
 - Document hyperparameter choices
 - Include performance metrics in commit messages
@@ -252,12 +273,14 @@ When working on Q-Learning or other AI components:
 ## 🎨 UI/UX Guidelines
 
 ### WPF Best Practices
+
 - Follow MVVM pattern consistently
 - Use data binding instead of direct manipulation
 - Implement proper command patterns
 - Ensure responsive design principles
 
 ### Accessibility
+
 - Support keyboard navigation
 - Use appropriate contrast ratios
 - Include tooltips and help text
@@ -266,6 +289,7 @@ When working on Q-Learning or other AI components:
 ## 📊 Performance Guidelines
 
 ### Profiling and Optimization
+
 ```csharp
 // Example: Optimize Q-table access
 private readonly ConcurrentDictionary<State, ActionValues> _qTable = new();
@@ -280,6 +304,7 @@ public double GetQValue(State state, Action action)
 ```
 
 ### Memory Management
+
 - Dispose of resources properly
 - Use object pooling for frequent allocations
 - Monitor memory usage during long training sessions
@@ -295,12 +320,14 @@ public double GetQValue(State state, Action action)
 ## 🔄 Release Process
 
 ### Version Numbering
+
 - **Major.Minor.Patch** (e.g., 1.2.3)
 - Major: Breaking changes or major features
 - Minor: New features, significant AI improvements
 - Patch: Bug fixes, small improvements
 
 ### Release Checklist
+
 - [ ] All tests pass
 - [ ] Documentation updated
 - [ ] Performance benchmarked
@@ -310,12 +337,14 @@ public double GetQValue(State state, Action action)
 ## 🤝 Community Guidelines
 
 ### Code Reviews
+
 - Be constructive and respectful
 - Focus on code quality and maintainability
 - Suggest alternatives when identifying issues
 - Recognize good practices and improvements
 
 ### Communication
+
 - Use GitHub Discussions for design questions
 - Create issues for bugs and feature requests
 - Join community channels for real-time collaboration
@@ -324,12 +353,14 @@ public double GetQValue(State state, Action action)
 ## 📚 Resources
 
 ### Learning Materials
+
 - [Q-Learning Tutorial](https://example.com/qlearning)
 - [WPF MVVM Guide](https://example.com/wpf-mvvm)
 - [.NET Performance Tips](https://example.com/dotnet-perf)
 - [C# Coding Standards](https://example.com/csharp-standards)
 
 ### Development Tools
+
 - **Visual Studio Community** (free)
 - **Git Extensions** for Git GUI
 - **dotMemory** for memory profiling
@@ -338,6 +369,7 @@ public double GetQValue(State state, Action action)
 ## 🙏 Recognition
 
 Contributors will be recognized in:
+
 - README.md contributors section
 - Release notes for significant contributions
 - GitHub contributors page
@@ -377,11 +409,13 @@ Ready to contribute? Follow this checklist:
 **Last Updated**: August 2025
 
 ### AI and Machine Learning
+
 - [Q-Learning Tutorial](https://en.wikipedia.org/wiki/Q-learning)
 - [Reinforcement Learning: An Introduction](http://incompleteideas.net/book/the-book.html)
 - [Deep Reinforcement Learning](https://arxiv.org/abs/1312.5602)
 
 ### Game Development
+
 - [WPF Documentation](https://docs.microsoft.com/en-us/dotnet/desktop/wpf/)
 - [C# Game Programming](https://docs.microsoft.com/en-us/dotnet/csharp/)
 - [MVVM Pattern](https://docs.microsoft.com/en-us/xamarin/xamarin-forms/enterprise-application-patterns/mvvm)

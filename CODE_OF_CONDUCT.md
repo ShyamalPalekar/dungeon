@@ -11,6 +11,7 @@ Diversity is one of our greatest strengths. We welcome contributors and particip
 ## Scope
 
 This Code of Conduct applies to all Dungeon Game community spaces, including:
+
 - GitHub repository discussions and issues
 - Community forums and chat channels  
 - Project documentation and wikis
@@ -70,6 +71,7 @@ All reports will be handled confidentially and reviewed promptly. We are committ
 ### Consequences
 
 Violations may result in:
+
 - Warning and request to change behavior
 - Temporary suspension from community spaces
 - Permanent ban from the project and community
